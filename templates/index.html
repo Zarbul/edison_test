@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Test Task Easy</title>
+</head>
+<body>
+<div>
+    {% block content %}
+    <h2> Загадайте двухзначное число.
+        <form action="predictions/" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <p><input type=submit value=Загадал></p>
+        </form>
+
+    </h2>
+    {% endblock %}
+</div>
+
+</body>
+</html>

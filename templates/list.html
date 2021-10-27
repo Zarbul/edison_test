@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block content %}
+    <ul>
+        {% for object in object_list %}
+            <li>{{ object.name }} - числа {{ object.all_numders }}, достоверность {{ object.credibility }}</li>
+        {% endfor %}
+    </ul>
+        <a href="/">Еще раз?</a>
+{% endblock %}
