@@ -1,9 +1,28 @@
 {% extends 'index.html' %}
 {% block content %}
     <ul>
-        {% for object in object_list %}
-            <li>{{ object.name }} - числа {{ object.all_numders }}, достоверность {{ object.credibility }}</li>
+        {% for key, value in responce.items %}
+            {% if key == 'username' %}
+                <li>Пользователь: {{ value }}</li>
+            {% elif key == 'user_numbers' %}
+                <li>Загаданные числа: {{ value }}</li>
+            {% elif key == 'psychics' %}
+                {% for psys in value %}
+                    {% for psy, result in psys.items %}
+                        <li>{% if psy == 'psy_name' %}
+                            {{ 'Экстрасенс'}} = {{ result }}
+                        {% elif psy == 'psy_all_number' %}
+                            {{ 'Предпологаемые числа: '}} = {{ result }}
+                        {% elif psy == 'psy_trust_level' %}
+                            {{ 'Доверие: '}} = {{ result }}
+                        {% endif %}</li>
+                    {% endfor %}
+{#                    <li>{{ 'Экстрасенс'}} - {{ 'Предпологаемые числа: '}} - {{ 'Доверие: '}}</li>#}
+                    {#                    <li>Экстрасенс: {{ psy }}</li>#}
+                {% endfor %}
+            {% endif %}
+{#        {{ responce }}#}
         {% endfor %}
     </ul>
-        <a href="/">Еще раз?</a>
+        <a href={% url 'input_number' %}>Еще раз?</a>
 {% endblock %}

@@ -1,39 +1,47 @@
-import json
+from django.http import JsonResponse
+from django.shortcuts import render
 
-from django import views
-from django.shortcuts import render, redirect
-
-from django.views import generic
-from .models import Psychics
+from django.shortcuts import render
+from pynames.generators.russian import PaganNamesGenerator
 
 from src.psychics.forms import InputNumberForm
+from .models import PsyController
+
+psychics = PsyController()
 
 
-class InputNumberView(generic.FormView):
-    template_name = 'index.html'
-    form_class = InputNumberForm
+def index(request):
+    request.session['username'] = PaganNamesGenerator().get_name_simple()
+    request.session['user_numbers'] = []
+    print(request.session['username'])
+    print(request.session.keys())
+    return render(request, 'base.html')
+
+
+def input_number(request):
+    print(request.session.values())
+    print(request.session['user_numbers'])
+    # print(user_numbers)
+    form = InputNumberForm()
+    if request.method == 'POST':
+        form = InputNumberForm(request.POST)
+        if form.is_valid():
+            return render(request, 'index.html', {'form': form})
+        else:
+            form = InputNumberForm()
+    return render(request, 'index.html', {'form': form})
 
 
 def prediction(request):
+    username = request.session['username']
     user_number = int(request.POST['number'])
-    queryset = Psychics.objects.all()
-    for psy in queryset:
-        psy_num = psy.psy_num()
-        all_psy_num = psy.all_numders
-        if all_psy_num:
-            all_psy_num = json.loads(all_psy_num)
-        else:
-            all_psy_num = []
-        all_psy_num.append(psy_num)
-        psy.all_numders = json.dumps(all_psy_num)
-        print(all_psy_num)
-        if user_number == psy_num:
-            psy.credibility += 1
-        psy.save()
-    return redirect('/results/')
+    request.session['user_numbers'].append(user_number)
+    request.session.modified = True
+    responce = {'username': username,
+                'user_numbers': request.session['user_numbers'],
+                'psychics': psychics.check_all(user_number)
+                }
+    print(user_number)
+    print(responce)
 
-
-class ResultView(generic.ListView):
-    model = Psychics
-    template_name = 'list.html'
-
+    return render(request, 'list.html', {'responce': responce})
