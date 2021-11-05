@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Test Task Easy</title>
+</head>
+<body>
+<div>
+    {% block content %}
+    <h2> Загадайте двухзначное число, а мы попробуем отгадать.
+        <form action="input_number/" method="post">
+            {% csrf_token %}
+            <p><input type=submit value=Поехали></p>
+        </form>
+
+    </h2>
+    {% endblock %}
+</div>
+
+</body>
+</html>
