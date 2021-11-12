@@ -1,27 +1,20 @@
 {% extends 'index.html' %}
 {% block content %}
     <ul>
-        {% for key, value in responce.items %}
-            {% if key == 'username' %}
-                <li>Пользователь: {{ value }}</li>
-            {% elif key == 'user_numbers' %}
-                <li>Загаданные числа: {{ value }}</li>
-            {% elif key == 'psychics' %}
-                {% for psys in value %}
-                    {% for psy, result in psys.items %}
-                        <li>{% if psy == 'psy_name' %}
-                            {{ 'Экстрасенс'}} = {{ result }}
-                        {% elif psy == 'psy_all_number' %}
-                            {{ 'Предпологаемые числа: '}} = {{ result }}
-                        {% elif psy == 'psy_trust_level' %}
-                            {{ 'Доверие: '}} = {{ result }}
-                        {% endif %}</li>
-                    {% endfor %}
-{#                    <li>{{ 'Экстрасенс'}} - {{ 'Предпологаемые числа: '}} - {{ 'Доверие: '}}</li>#}
-                    {#                    <li>Экстрасенс: {{ psy }}</li>#}
-                {% endfor %}
-            {% endif %}
-{#        {{ responce }}#}
+        <li>
+            Пользователь: {{ username }} - загадал <strong>{{ user_numbers | last }}</strong> <br>
+            Загаданные числа: {{ user_numbers }}
+        </li>
+        ===============
+        {% for psys in psychics %}
+            <li>
+                {% with  last_num=psys.psy_all_number|last %}<br>
+                Экстрасенс: {{ psys.psy_name }} - предположил, что это число <strong>{{ last_num.psy_num }}</strong><br>
+                {% endwith %}
+                Предполагаемые числа: {% for i in psys.psy_all_number %} {{ i.psy_num }}, {% endfor %}<br>
+                Достоверность: {{ psys.psy_trust_level }}<br>
+            ===============
+            </li>
         {% endfor %}
     </ul>
         <a href={% url 'input_number' %}>Еще раз?</a>
