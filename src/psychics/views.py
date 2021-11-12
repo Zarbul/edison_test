@@ -1,3 +1,6 @@
+import json
+
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -7,21 +10,17 @@ from pynames.generators.russian import PaganNamesGenerator
 from src.psychics.forms import InputNumberForm
 from .models import PsyController
 
+
 psychics = PsyController()
 
 
 def index(request):
     request.session['username'] = PaganNamesGenerator().get_name_simple()
     request.session['user_numbers'] = []
-    print(request.session['username'])
-    print(request.session.keys())
     return render(request, 'base.html')
 
 
 def input_number(request):
-    print(request.session.values())
-    print(request.session['user_numbers'])
-    # print(user_numbers)
     form = InputNumberForm()
     if request.method == 'POST':
         form = InputNumberForm(request.POST)
@@ -39,9 +38,7 @@ def prediction(request):
     request.session.modified = True
     responce = {'username': username,
                 'user_numbers': request.session['user_numbers'],
-                'psychics': psychics.check_all(user_number)
+                'psychics': psychics.check_all(user_number, username)
                 }
-    print(user_number)
-    print(responce)
 
-    return render(request, 'list.html', {'responce': responce})
+    return render(request, 'list.html', context=responce)
